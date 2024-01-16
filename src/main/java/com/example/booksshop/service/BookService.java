@@ -14,11 +14,12 @@ import java.util.List;
 public class BookService {
     private final BookDao bookDao;
 
-    public List<Book> listAllBooks() {
+    public List<Book> listBooks() {
         return bookDao.findAll();
     }
 
     public Book findBookById(BookId bookId) {
-        return bookDao.findById(bookId).orElseThrow(EntityNotFoundException::new);
+        return bookDao.findById(bookId)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }

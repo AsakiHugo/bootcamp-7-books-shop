@@ -1,25 +1,20 @@
 <!DOCTYPE html>
 <html th:fragment="layout(main)" lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
->
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Online Book Store</title>
-    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css"
-          th:href="@{/bootstrap/css/bootstrap.min.css}"
-    >
-    <link rel="stylesheet" href="../../static/bootstrap/css/app.css"
-          th:href="@{/bootstrap/css/app.css}"
-    >
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Questrial&family=Raleway:wght@100;300;500;700&display=swap"
-          rel="stylesheet">
+    <title>Title</title>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
           integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+    <link rel="stylesheet" href="../../static/bootstrap/css/bootstrap.min.css"
+          th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" href="../../static/bootstrap/css/app.css"
+          th:href="@{/bootstrap/css/app.css}">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100,300,500,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Questrial" rel="stylesheet">
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-
 <nav class="navbar navbar-expand-md navbar-dark text-white">
     <a href="#" class="navbar-brand">
         <h3 class="mb-0">BookShop</h3>
@@ -44,52 +39,42 @@
                 <a href="#" class="nav-link">Book</a>
             </li>
         </ul>
-
         <div sec:authorize="!isAuthenticated()">
-            <a class="me-2"
-               th:href="@{/auth/login}"
-            >Login</a>
+            <a th:href="@{/auth/login}" class="me-2">Login</a>
         </div>
-
         <div sec:authorize="isAuthenticated()">
-            <a class="me-2" href="#">
-                Own Library
-            </a>
-            <a href="javascript: document.logoutForm.submit()">Logout</a>
-            <form name="logoutForm" method="post"
-                  th:action="@{/logout}"
-                  th:hidden="true"
-            >
+            <a th:href="@{/book/own-library}" class="nav-link me-2">Own Library</a>
+            <a href="javascript: document.logoutForm.submit()" class="nav-link">Logout</a>
+            <form name="logoutForm" th:action="@{/logout}"
+                  method="post" th:hidden="true">
                 <input type="submit" hidden value="Logout">
             </form>
         </div>
     </div>
 </nav>
-
 <section id="showcase" class="d-flex justify-content-center align-items-center text-white">
     <div id="overlay"></div>
     <div id="header" class="container text-center">
-        <h3 class="display-5 mb-0">MODERN BOOKSHOP</h3>
+        <h3 class="display-5 m-0">MODERN BOOKSHOP</h3>
         <h1 class="display-1">BOOKSHOP</h1>
-        <p class="lead d-none d-md-block">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Exercitationem, magni?
-        </p>
-        <a id="book" class="btn btn-outline-primary px-5 py-2 text-white"
-           th:href="@{/book/list-books}"
-        >BOOK NOW</a>
+        <p class="lead d-none d-md-block">Lorem ipsum dolor sit amet, consectetur
+            adipisicing elit. In, labore.</p>
+        <a id="book" th:href="@{/book/list-books}"
+           class="btn btn-outline-primary px-5 py-2 text-white">Book Now</a>
     </div>
 </section>
 
+
 <div th:replace="${main}"></div>
 
-<section class="container-fluid bg-dark text-white">
+<section class="bg-dark text-white container-fluid">
     <div class="container text-center p-5">
         <h3>JOIN OUR NEWS BUYERS FOR DEALS AND UPDATE AND OFFERS</h3>
         <div class="row justify-content-center">
             <div class="col-10 col-md-6 col-sm-8 col-lg-4">
-                <form action="#" method="post">
+                <form action="#">
                     <div class="input-group mb-3">
-                        <input class="form-control" type="text">
+                        <input type="text" class="form-control">
                         <button class="btn btn-success input-group-text">Search</button>
                     </div>
                 </form>
@@ -97,23 +82,23 @@
         </div>
     </div>
 </section>
-
-<section class="bg-secondary p-4">
-    <ul class="nav text-center justify-content-center flex-column flex-sm-row">
+<section id="footer" class="bg-secondary p-4 text-white">
+    <ul class="nav text-center justify-content-center flex-column
+         flex-sm-row">
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">FAQ</a>
+            <a href="#" class="nav-link">FAQ</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">EXPERIENCE</a>
+            <a href="#" class="nav-link">EXPERIENCE</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">CONTACT</a>
+            <a href="#" class="nav-link">CONTACT</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">BOOK NOW</a>
+            <a href="#" class="nav-link">BOOKNOW</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white" href="#">EXPLORE</a>
+            <a href="#" class="nav-link">EXPLORE</a>
         </li>
     </ul>
 </section>

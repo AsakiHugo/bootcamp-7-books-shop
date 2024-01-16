@@ -25,9 +25,10 @@ public class CartBean {
         return this.cartItems;
     }
 
+
     public void deleteCartItem(int id, String isbn) {
         this.cartItems = this.cartItems.stream()
-                .filter(c -> c.getId() != id && c.getIsbn() != isbn)
+                .filter(c -> c.getId() != id && !c.getIsbn().equals(isbn))
                 .collect(Collectors.toSet());
     }
 

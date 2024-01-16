@@ -29,14 +29,16 @@ public class Book {
     @ManyToMany
     private List<Genre> genres = new ArrayList<>();
 
-    @ManyToOne
-    private OrderItem orderItem;
-
     private String title;
     private String description;
     private double price;
     private int stock;
     private String imgUrl;
+
+    public void addGenres(Genre genre) {
+        genre.getBooks().add(this);
+        genres.add(genre);
+    }
 
     public Book(int id, String isbn, String title, String description, double price, int stock, String imgUrl) {
         this.id = id;
@@ -46,10 +48,5 @@ public class Book {
         this.price = price;
         this.stock = stock;
         this.imgUrl = imgUrl;
-    }
-
-    public void addGenres(Genre genre) {
-        genre.getBooks().add(this);
-        genres.add(genre);
     }
 }

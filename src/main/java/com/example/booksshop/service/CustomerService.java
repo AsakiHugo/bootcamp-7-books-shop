@@ -1,56 +1,73 @@
 package com.example.booksshop.service;
 
-import com.example.booksshop.dao.BookDao;
+import com.example.booksshop.dao.BookBoughtDao;
 import com.example.booksshop.dao.CustomerDao;
-import com.example.booksshop.dao.OrderItemDao;
+import com.example.booksshop.dto.BookItem;
 import com.example.booksshop.dto.CartItem;
-import com.example.booksshop.entity.*;
-import jakarta.persistence.EntityExistsException;
+import com.example.booksshop.entity.BooksBought;
+import com.example.booksshop.entity.Customer;
+import com.example.booksshop.entity.Order;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerDao customerDao;
-    private final BookDao bookDao;
     private final CartService cartService;
-    private final OrderItemDao orderItemDao;
+    private final BookBoughtDao bookBoughtDao;
 
     @Transactional
     public void saveCustomerOrderItems(Customer customer) {
-        Customer customer1 = customerDao.findCustomerByCustomerName(customer.getCustomerName())
-                .orElseThrow(EntityExistsException::new);
+        List<Order> orders = customerDao.fetchOrderByCustomerName(customer.getCustomerName());
+        Order order = orders.get(0);
 
-        Order order = customer1.getOrders().get(0);
+        Optional<BooksBought> book = bookBoughtDao.
+                findBooksBoughtByCustomerName(customer.getCustomerName());
 
-        OrderItem orderItem = new OrderItem();
+        if (!book.isPresent()) {
+            BooksBought booksBought = new BooksBought();
 
-        orderItem.setOrder(order);
+            booksBought.setCustomerName(customer.getCustomerName());
+            booksBought.setOrderId(order.getId());
+            booksBought.setOrderDate(order.getOrderDate());
+            List<BookItem> bookItems = getBookItems();
+            booksBought.setBooks(bookItems);
 
-        int quantity = cartService.getCartItems()
-                .stream()
-                .map(CartItem::getQuantity)
-                .mapToInt(Integer::intValue)
-                .sum();
+            bookBoughtDao.save(booksBought);
+        } else {
+            BooksBought booksBought = book.get();
+            List<BookItem> bookItems = booksBought.getBooks();
+            List<BookItem> newBookItem = getBookItems();
+            bookItems.addAll(newBookItem);
+            booksBought.setBooks(bookItems);
 
-        orderItem.setQuantity(quantity);
-
-        cartService.getCartItems()
-                .stream()
-                .map(c -> toBook(c))
-                .forEach(b -> orderItem.addBook(b));
-
-        orderItemDao.save(orderItem);
+            bookBoughtDao.saveAndFlush(booksBought);
+        }
     }
 
-    private Book toBook(CartItem cartItem) {
-        BookId bookId = new BookId();
-        bookId.setId(cartItem.getId());
-        bookId.setIsbn(cartItem.getIsbn());
+    private List<BookItem> getBookItems() {
+        List<BookItem> bookItems = new ArrayList<>();
 
-        return bookDao.findById(bookId)
-                .orElseThrow(EntityExistsException::new);
+        for (CartItem cartItem : cartService.getCartItems()) {
+            bookItems.add(toBook(cartItem));
+        }
+
+        return bookItems;
+    }
+
+    private BookItem toBook(CartItem cartItem) {
+        return new BookItem(
+                cartItem.getId(),
+                cartItem.getIsbn(),
+                cartItem.getTitle(),
+                cartItem.getPrice(),
+                cartItem.getQuantity()
+        );
     }
 }
